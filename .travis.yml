@@ -1,0 +1,28 @@
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: elasticrepo
+  matrix:
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: ubuntu1804
+
+install:
+  # Install test dependencies.
+  - pip install molecule docker
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - cd ../
+  - mv ansible-role-$ROLE_NAME memoryleak.$ROLE_NAME
+  - cd memoryleak.$ROLE_NAME
+
+script:
+  # Run tests.
+  - molecule test
+
+notifications:
+  # Update galaxy
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
